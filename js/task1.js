@@ -71,6 +71,7 @@ const indicator = document.querySelector(".indicator")
 // const password2 = document.getElementById("password2")
 // const email = document.getElementById("email")
 const addButton = form.querySelector(".addTask")
+indicatorAnim()
 form.addEventListener("submit",function(e){
     e.preventDefault()
     validate()
