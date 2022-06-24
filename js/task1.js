@@ -83,7 +83,6 @@ form.addEventListener("click",(e)=>{
     }
     if(e.target.classList.contains("removeBtn")){
         e.target.parentElement.remove()
-        counter-=1
         indicatorAnim()
     }
     if(e.target.classList.contains("removeMarkedTasks")){
@@ -91,24 +90,23 @@ form.addEventListener("click",(e)=>{
         markedTasksArray.forEach(function(element){
             element.parentElement.parentElement.remove()
         })
-        counter = 0
         indicatorAnim()
     }
 })
 function indicatorAnim(){
     const beforeElem = document.querySelector(".background")
-    const markedTasksArray = form.querySelectorAll(".overline")
-    indicator.firstElementChild.innerHTML = `${markedTasksArray.length} of ${counter} tasks done`
-    let backgroundFillingPercent = (markedTasksArray.length)/counter
-    let width = backgroundFillingPercent*100
+    let markedTasksArray = document.querySelectorAll(".overline")
+    let allTasksArray = document.querySelectorAll(".input_controls_task")
+    console.log(allTasksArray)
+    const indicator = form.querySelector(".indicator")
+    indicator.firstElementChild.innerHTML = `${markedTasksArray.length} of ${allTasksArray.length} tasks done`
+    let backgroundFillingPercent = (markedTasksArray.length)/allTasksArray.length
+    let width = backgroundFillingPercent*indicator.clientWidth
     beforeElem.style=`width:${width}px`
-    console.log(indicator.firstElementChild)
 }
 let counter = 0
 function addTask(text){
     counter+=1
-    console.log(taskInput.innerHTML)
-    indicatorAnim()
     taskInput.value=""
     addButton.insertAdjacentHTML("beforebegin",
         `<div class="input_controls_task">
@@ -118,6 +116,7 @@ function addTask(text){
         </div>
         <button class="removeBtn" style="width: 30px;height: 30px;" type="button">×</button>
     </div>`)
+    indicatorAnim()
 }
 function setError(element,error){
     const inputControls = element.parentElement
@@ -144,7 +143,6 @@ function validate(){
     // const password2Value = password2.value.trim()
     // const emailValue = email.value.trim()
     if(taskInputValue===""){
-        console.log("fffff")
         setError(taskInput,"Task field is empty")
     }else{
         setSuccess(taskInput)
