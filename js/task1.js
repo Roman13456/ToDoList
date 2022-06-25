@@ -86,6 +86,22 @@ form.addEventListener("click",(e)=>{
         e.target.parentElement.remove()
         indicatorAnim()
     }
+    if(e.target.classList.contains("markTask")){
+        let allTasksArray = document.querySelectorAll(".input_controls_task label")
+        allTasksArray.forEach(function(element){
+            element.classList.add("overline")
+            element.previousElementSibling.checked=true
+        })
+        indicatorAnim()
+    }
+    if(e.target.classList.contains("unMarkTask")){
+        let allTasksArray = document.querySelectorAll(".input_controls_task label")
+        allTasksArray.forEach(function(element){
+            element.classList.remove("overline")
+            element.previousElementSibling.checked=false
+        })
+        indicatorAnim()
+    }
     if(e.target.classList.contains("removeMarkedTasks")){
         const markedTasksArray = form.querySelectorAll(".overline")
         markedTasksArray.forEach(function(element){
@@ -98,7 +114,6 @@ function indicatorAnim(){
     const beforeElem = document.querySelector(".background")
     let markedTasksArray = document.querySelectorAll(".overline")
     let allTasksArray = document.querySelectorAll(".input_controls_task")
-    console.log(allTasksArray)
     const indicator = form.querySelector(".indicator")
     indicator.firstElementChild.innerHTML = `${markedTasksArray.length} of ${allTasksArray.length} tasks done`
     let backgroundFillingPercent = (markedTasksArray.length)/allTasksArray.length
