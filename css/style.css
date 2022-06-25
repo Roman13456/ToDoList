@@ -96,6 +96,7 @@ h3{
 }
 .input_controls_task{
     justify-content: space-between;
+    align-items: center;
     display: flex;
     flex-direction: row;
     padding-bottom: 20px;
