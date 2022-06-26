@@ -63,7 +63,6 @@ h3{
     position: absolute;
     background-color: yellow;
     height: 40px; width: 0;
-    opacity: 0.5;
 }
 /* .indicator::before{
     position: absolute;
