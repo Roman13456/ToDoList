@@ -84,7 +84,7 @@ getFromStorage()
 tasks.forEach(addTask)
 // tasks.forEach(addTask)
 // addTask(tasks[0])
-indicatorAnim()
+window.addEventListener("load",indicatorAnim)
 form.addEventListener("submit",function(e){
     e.preventDefault()
     validate()
