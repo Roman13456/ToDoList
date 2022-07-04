@@ -81,11 +81,9 @@ function updateStorage(){
     localStorage.setItem("tasks",JSON.stringify(tasks))
 }
 getFromStorage()
-// tasks.forEach(addTask)
-// addTask(tasks[0])
 window.addEventListener("load",()=>{
-    indicatorAnim()
     tasks.forEach(addTask)
+    indicatorAnim()
 })
 form.addEventListener("submit",function(e){
     e.preventDefault()
@@ -181,7 +179,6 @@ function addTask(task){
         </div>
         <button class="removeBtn" style="width: 30px;height: 30px;" type="button">×</button>
     </div>`)
-    indicatorAnim()
     taskInput.value=""
 }
 function setError(element,error){
@@ -221,6 +218,7 @@ function validate(){
         }
         tasks.push(task)
         addTask(task)
+        indicatorAnim()
         updateStorage()
     }
     
