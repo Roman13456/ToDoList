@@ -71,6 +71,19 @@ const indicator = document.querySelector(".indicator")
 // const password2 = document.getElementById("password2")
 // const email = document.getElementById("email")
 const addButton = form.querySelector(".addTask")
+let tasks = []
+function getFromStorage(){
+    if(localStorage.getItem("tasks")!==null){
+        tasks = JSON.parse(localStorage.getItem("tasks"))
+    }
+}
+function updateStorage(){
+    localStorage.setItem("tasks",JSON.stringify(tasks))
+}
+getFromStorage()
+tasks.forEach(addTask)
+// tasks.forEach(addTask)
+// addTask(tasks[0])
 indicatorAnim()
 form.addEventListener("submit",function(e){
     e.preventDefault()
@@ -78,38 +91,65 @@ form.addEventListener("submit",function(e){
 })
 form.addEventListener("click",(e)=>{
     if((e.target).classList.contains("checkbox")){
-        const label =e.target.nextSibling.nextSibling;
-        label.classList.toggle("overline")
+        if(e.target.checked===true){//дуже сильно тут можна заплутатися
+            addOverline(e.target)
+            console.log(e.target)
+        }else{
+            removeOverline(e.target)
+            console.log(e.target)
+        }
         indicatorAnim()
     }
     if(e.target.classList.contains("removeBtn")){
-        e.target.parentElement.remove()
+        removeTask(e.target.parentElement.querySelector("label"))
+        updateStorage()
         indicatorAnim()
     }
     if(e.target.classList.contains("markTask")){
-        let allTasksArray = document.querySelectorAll(".input_controls_task label")
-        allTasksArray.forEach(function(element){
-            element.classList.add("overline")
-            element.previousElementSibling.checked=true
-        })
+        let allTasksArray = document.querySelectorAll(".input_controls_task input")
+        allTasksArray.forEach(addOverline)
+        updateStorage()
         indicatorAnim()
     }
     if(e.target.classList.contains("unMarkTask")){
-        let allTasksArray = document.querySelectorAll(".input_controls_task label")
-        allTasksArray.forEach(function(element){
-            element.classList.remove("overline")
-            element.previousElementSibling.checked=false
-        })
+        let allTasksArray = document.querySelectorAll(".input_controls_task input")
+        allTasksArray.forEach(removeOverline)
         indicatorAnim()
     }
     if(e.target.classList.contains("removeMarkedTasks")){
         const markedTasksArray = form.querySelectorAll(".overline")
-        markedTasksArray.forEach(function(element){
-            element.parentElement.parentElement.remove()
-        })
+        markedTasksArray.forEach(removeTask)
+        markedTasksArray.forEach((e)=>e.removeAttribute("checked"))
+        updateStorage()
         indicatorAnim()
     }
 })
+function addOverline(element){
+    element.checked = true
+    const parent = element.parentElement.parentElement
+    const id = +(parent.getAttribute("data-id"))
+    const index = tasks.findIndex((task)=>id===task.id)
+    parent.querySelector("label").classList.add("overline")
+    tasks[index].overline = true
+    updateStorage()
+}
+function removeOverline(element){
+    element.checked = false
+    const parent = element.parentElement.parentElement
+    const id = +(parent.getAttribute("data-id"))
+    const index = tasks.findIndex((task)=>id===task.id)
+    parent.querySelector("label").classList.remove("overline")
+    tasks[index].overline = false
+    updateStorage()
+}
+function removeTask(element){
+    console.log(element)
+    const parent = element.parentElement.parentElement
+    parent.remove()
+    const id = +(parent.getAttribute("data-id"))
+    const index = tasks.findIndex((task)=>id===task.id)
+    tasks.splice(index,1)
+}
 function indicatorAnim(){
     const beforeElem = document.querySelector(".background")
     let markedTasksArray = document.querySelectorAll(".overline")
@@ -120,19 +160,27 @@ function indicatorAnim(){
     let width = backgroundFillingPercent*indicator.clientWidth
     beforeElem.style=`width:${width}px`
 }
-let counter = 0
-function addTask(text){
-    counter+=1
-    taskInput.value=""
+function addTask(task){
+    function isOverline(){
+        if(task.overline){
+            return "class='overline'"
+        }else return ""
+    }
+    function isChecked(){
+        if(task.overline){
+            return "checked"
+        }else return ""
+    }
     addButton.insertAdjacentHTML("beforebegin",
-        `<div class="input_controls_task">
+        `<div class="input_controls_task" data-id="${task.id}">
         <div>
-            <input id="checkbox${counter}" name="checkbox" class="checkbox" type="checkbox">
-            <label for="checkbox${counter}">${text}</label>
+            <input ${isChecked()} id="checkbox${task.id}" name="checkbox" class="checkbox" type="checkbox">
+            <label ${isOverline()} for="checkbox${task.id}">${task.name}</label>
         </div>
         <button class="removeBtn" style="width: 30px;height: 30px;" type="button">×</button>
     </div>`)
     indicatorAnim()
+    taskInput.value=""
 }
 function setError(element,error){
     const inputControls = element.parentElement
@@ -148,6 +196,7 @@ function setError(element,error){
 // }
 function setSuccess(element){
     const inputControls = element.parentElement
+    console.log(inputControls)
     const errorMsg = inputControls.querySelector(".error")
     inputControls.classList.add("success")
     inputControls.classList.remove("error")
@@ -162,9 +211,52 @@ function validate(){
         setError(taskInput,"Task field is empty")
     }else{
         setSuccess(taskInput)
-        addTask(taskInputValue)
+        const data = new Date().getTime()
+        const task ={
+            id : data,
+            name: taskInput.value,
+            overline:false
+        }
+        tasks.push(task)
+        addTask(task)
+        updateStorage()
     }
-    // if(emailValue===""){
+    
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// if(emailValue===""){
     //     setError(email,"Email field is empty")
     // }else if(!isValidEmail(emailValue)){
     //     setError(email,"Email field has invalid format")
@@ -189,4 +281,3 @@ function validate(){
     // else{
     //     setSuccess(password2)
     // }
-}
