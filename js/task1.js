@@ -81,10 +81,12 @@ function updateStorage(){
     localStorage.setItem("tasks",JSON.stringify(tasks))
 }
 getFromStorage()
-tasks.forEach(addTask)
 // tasks.forEach(addTask)
 // addTask(tasks[0])
-window.addEventListener("load",indicatorAnim)
+window.addEventListener("load",()=>{
+    indicatorAnim()
+    tasks.forEach(addTask)
+})
 form.addEventListener("submit",function(e){
     e.preventDefault()
     validate()
